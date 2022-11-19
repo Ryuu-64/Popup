@@ -61,6 +61,10 @@ public class PopUpEvent {
     }
 
     private void add(int id, int priority, IFunc<PopUp> showPopUp) {
+        if (showPopUp == null) {
+            System.out.println(PopUpEvent.class + ", add popup failed, showPopUp can't be null");
+            return;
+        }
         if (id < 0) {
             System.out.println(PopUpEvent.class + ", add popup failed, id must be non-negative value");
             return;
