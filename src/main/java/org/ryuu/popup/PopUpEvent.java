@@ -27,30 +27,30 @@ public class PopUpEvent {
         }
 
         for (int i = 0; i < popUpEventArgsList.size(); i++) {
-            PopUpEventArgs popUpEventArgs = this.popUpEventArgsList.get(i);
-            if (popUpEventArgs.getPriority() != priority) {
+            PopUpEventArgs popUpEventArgsInList = popUpEventArgsList.get(i);
+            if (popUpEventArgsInList.getPriority() != priority) {
                 continue;
             }
 
             i--;
-            this.executePopUpEventArgsList.add(popUpEventArgs);
-            this.popUpEventArgsList.remove(popUpEventArgs);
-            IFunc<PopUp> showPopUp = popUpEventArgs.getShowPopUp();
+            executePopUpEventArgsList.add(popUpEventArgsInList);
+            popUpEventArgsList.remove(popUpEventArgsInList);
+            IFunc<PopUp> showPopUp = popUpEventArgsInList.getShowPopUp();
             if (showPopUp == null) {
-                System.out.println(PopUpEvent.class + ", showPopUp is null, " + popUpEventArgs);
+                System.out.println("[" + this + "] showPopUp is null, " + popUpEventArgsInList);
                 return;
             }
 
             PopUp popUp = showPopUp.invoke();
-            System.out.println(PopUpEvent.class + "popup, " + popUpEventArgs);
+            System.out.println("[" + this + "] popup, " + popUpEventArgsInList);
             if (popUp == null) {
-                System.out.println(PopUpEvent.class + ", popup is null, " + popUpEventArgs);
+                System.out.println("[" + this + "] popup is null, " + popUpEventArgsInList);
                 return;
             }
 
             popUp.getOnDispose().add(() -> {
-                this.executePopUpEventArgsList.remove(popUpEventArgs);
-                System.out.println(PopUpEvent.class + ", popup dispose, " + popUpEventArgs);
+                executePopUpEventArgsList.remove(popUpEventArgsInList);
+                System.out.println("[" + this + "] popup dispose, " + popUpEventArgsInList);
                 invoke();
             });
         }
@@ -62,28 +62,28 @@ public class PopUpEvent {
 
     private void add(int id, int priority, IFunc<PopUp> showPopUp) {
         if (showPopUp == null) {
-            System.out.println(PopUpEvent.class + ", add popup failed, showPopUp can't be null");
+            System.out.println("[" + this + "] add popup failed, showPopUp can't be null");
             return;
         }
         if (id < 0) {
-            System.out.println(PopUpEvent.class + ", add popup failed, id must be non-negative value");
+            System.out.println("[" + this + "] add popup failed, id must be non-negative value");
             return;
         }
 
         PopUpEventArgs popUpEventArgs = new PopUpEventArgs(id, priority, showPopUp);
-        for (PopUpEventArgs popUpEventArgsList : this.popUpEventArgsList) {
-            if (popUpEventArgsList.getId() == id) {
-                System.out.println(PopUpEvent.class + ", add popup failed, repeat id, " + popUpEventArgs);
+        for (PopUpEventArgs popUpEventArgsInList : popUpEventArgsList) {
+            if (popUpEventArgsInList.getId() == id) {
+                System.out.println("[" + this + "] add popup failed, repeat id, " + popUpEventArgsInList);
                 return;
             }
         }
 
-        System.out.println(PopUpEvent.class + ", add popup, " + popUpEventArgs);
-        this.popUpEventArgsList.add(popUpEventArgs);
-        PopUpEventArgs[] popUpEventArgsArray = this.popUpEventArgsList.toArray(new PopUpEventArgs[0]);
+        System.out.println("[" + this + "] add popup, " + popUpEventArgs);
+        popUpEventArgsList.add(popUpEventArgs);
+        PopUpEventArgs[] popUpEventArgsArray = popUpEventArgsList.toArray(new PopUpEventArgs[0]);
         Arrays.sort(popUpEventArgsArray);
-        this.popUpEventArgsList.clear();
-        this.popUpEventArgsList.addAll(Arrays.asList(popUpEventArgsArray));
+        popUpEventArgsList.clear();
+        popUpEventArgsList.addAll(Arrays.asList(popUpEventArgsArray));
         if (id >= nextId) {
             nextId = id + 1;
         }
