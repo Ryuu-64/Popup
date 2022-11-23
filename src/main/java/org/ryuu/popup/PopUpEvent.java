@@ -1,6 +1,6 @@
 package org.ryuu.popup;
 
-import org.ryuu.functional.IFunc;
+import org.ryuu.functional.IAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,48 +19,42 @@ public class PopUpEvent {
         int priority = popUpEventArgsList.get(0).getPriority();
 
         if (executePopUpEventArgsList.size() > 0) {
-            for (PopUpEventArgs executePopUpEventArgs : executePopUpEventArgsList) {
-                if (priority > executePopUpEventArgs.getPriority()) {
+            for (PopUpEventArgs popUpEventArgs : executePopUpEventArgsList) {
+                if (priority > popUpEventArgs.getPriority()) {
                     return;
                 }
             }
         }
 
         for (int i = 0; i < popUpEventArgsList.size(); i++) {
-            PopUpEventArgs popUpEventArgsInList = popUpEventArgsList.get(i);
-            if (popUpEventArgsInList.getPriority() != priority) {
+            PopUpEventArgs popUpEventArgs = popUpEventArgsList.get(i);
+            if (popUpEventArgs.getPriority() != priority) {
                 continue;
             }
 
+            executePopUpEventArgsList.add(popUpEventArgs);
+            popUpEventArgsList.remove(popUpEventArgs);
             i--;
-            executePopUpEventArgsList.add(popUpEventArgsInList);
-            popUpEventArgsList.remove(popUpEventArgsInList);
-            IFunc<PopUp> showPopUp = popUpEventArgsInList.getShowPopUp();
-            if (showPopUp == null) {
-                System.out.println("[" + this + "] showPopUp is null, " + popUpEventArgsInList);
-                return;
-            }
 
-            PopUp popUp = showPopUp.invoke();
-            System.out.println("[" + this + "] popup, " + popUpEventArgsInList);
-            if (popUp == null) {
-                System.out.println("[" + this + "] popup is null, " + popUpEventArgsInList);
-                return;
-            }
-
-            popUp.getOnDispose().add(() -> {
-                executePopUpEventArgsList.remove(popUpEventArgsInList);
-                System.out.println("[" + this + "] popup dispose, " + popUpEventArgsInList);
+            popUpEventArgs.getPopUp().getOnDispose().add(() -> {
+                executePopUpEventArgsList.remove(popUpEventArgs);
+                System.out.println("[" + this + "] popup dispose, " + popUpEventArgs);
                 invoke();
             });
+            popUpEventArgs.getShowPopUp().invoke();
+            System.out.println("[" + this + "] popup , " + popUpEventArgs);
         }
     }
 
-    public void add(int priority, IFunc<PopUp> showPopUp) {
-        add(nextId, priority, showPopUp);
+    public void add(int priority, PopUp popUp, IAction showPopUp) {
+        add(nextId, priority, popUp, showPopUp);
     }
 
-    private void add(int id, int priority, IFunc<PopUp> showPopUp) {
+    private void add(int id, int priority, PopUp popUp, IAction showPopUp) {
+        if (popUp == null) {
+            System.out.println("[" + this + "] add popup failed, popUp can't be null");
+            return;
+        }
         if (showPopUp == null) {
             System.out.println("[" + this + "] add popup failed, showPopUp can't be null");
             return;
@@ -70,7 +64,7 @@ public class PopUpEvent {
             return;
         }
 
-        PopUpEventArgs popUpEventArgs = new PopUpEventArgs(id, priority, showPopUp);
+        PopUpEventArgs popUpEventArgs = new PopUpEventArgs(id, priority, popUp, showPopUp);
         for (PopUpEventArgs popUpEventArgsInList : popUpEventArgsList) {
             if (popUpEventArgsInList.getId() == id) {
                 System.out.println("[" + this + "] add popup failed, repeat id, " + popUpEventArgsInList);
@@ -92,4 +86,5 @@ public class PopUpEvent {
     public List<PopUpEventArgs> getEventArgsList() {
         return new ArrayList<>(popUpEventArgsList);
     }
+
 }
