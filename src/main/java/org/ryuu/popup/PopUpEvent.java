@@ -25,6 +25,7 @@ public class PopUpEvent {
         if (!executePopUpEventArgsList.isEmpty() && executePopUpEventArgsList.stream().anyMatch(popUpEventArgs -> nextPriority > popUpEventArgs.getPriority())) {
             return;
         }
+
         for (int i = 0; i < popUpEventArgsList.size(); i++) {
             PopUpEventArgs popUpEventArgs = popUpEventArgsList.get(i);
             if (popUpEventArgs.getPriority() != nextPriority) {
@@ -38,17 +39,13 @@ public class PopUpEvent {
         }
     }
 
-    public PopUpEventArgs add(int priority, PopUp popUp, IAction1Arg<PopUp> showPopUp) {
-        if (popUp == null) {
-            logger.warning("[" + this + "] add popup failed, popUp can't be null");
-            return null;
-        }
+    public PopUpEventArgs add(int priority, IAction1Arg<PopUp> showPopUp) {
         if (showPopUp == null) {
             logger.warning("[" + this + "] add popup failed, showPopUp can't be null");
             return null;
         }
 
-        PopUpEventArgs popUpEventArgs = new PopUpEventArgs(priority, popUp, showPopUp);
+        PopUpEventArgs popUpEventArgs = new PopUpEventArgs(priority, new PopUpAdapter(), showPopUp);
         popUpEventArgs.getPopUp().getOnDispose().add(() -> {
             executePopUpEventArgsList.remove(popUpEventArgs);
             logger.info("[" + this + "] popup dispose, " + popUpEventArgs);
