@@ -3,7 +3,6 @@ package org.ryuu.popup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import org.ryuu.functional.IAction;
 import org.ryuu.functional.IAction1Arg;
 
 @AllArgsConstructor
