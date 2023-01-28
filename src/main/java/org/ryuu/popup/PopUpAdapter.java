@@ -9,5 +9,5 @@ import org.ryuu.functional.Action;
 @ToString
 public class PopUpAdapter implements PopUp {
     @Getter
-    private final Action onDispose = new Action();
+    private final Action dispose = new Action();
 }
