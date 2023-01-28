@@ -1,7 +1,7 @@
 package org.ryuu.popup;
 
 import lombok.Getter;
-import org.ryuu.functional.IAction1Arg;
+import org.ryuu.functional.Action1Arg;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +37,7 @@ public class PopUpEvents {
         }
     }
 
-    public PopUpEvent add(int priority, IAction1Arg<PopUp> showPopUp) {
+    public PopUpEvent add(int priority, Action1Arg<PopUp> showPopUp) {
         if (showPopUp == null) {
             logger.warning("[" + this + "] add popup failed, showPopUp can't be null");
             return null;

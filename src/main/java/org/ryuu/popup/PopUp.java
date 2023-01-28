@@ -1,8 +1,8 @@
 package org.ryuu.popup;
 
-import org.ryuu.functional.Action;
+import org.ryuu.functional.Actions;
 
 @FunctionalInterface
 public interface PopUp {
-    Action getDispose();
+    Actions getDispose();
 }
