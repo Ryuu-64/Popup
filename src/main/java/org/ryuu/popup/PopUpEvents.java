@@ -64,4 +64,8 @@ public class PopUpEvents {
     public List<PopUpEvent> getEventList() {
         return new ArrayList<>(popUpEvents);
     }
+
+    public List<PopUpEvent> getExecuteEventList() {
+        return new ArrayList<>(executePopUpEvents);
+    }
 }
