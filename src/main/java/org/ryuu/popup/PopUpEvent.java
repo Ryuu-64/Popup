@@ -8,8 +8,10 @@ import org.ryuu.functional.Action1Arg;
 public class PopUpEvent implements Comparable<PopUpEvent> {
     @Getter
     private final int priority;
+
     @Getter
     private final PopUp popUp;
+
     @Getter
     private final Action1Arg<PopUp> showPopUp;
 

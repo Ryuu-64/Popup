@@ -11,7 +11,9 @@ import java.util.logging.Logger;
 public class PopUpEvents {
     @Getter
     private static final Logger logger = Logger.getLogger(PopUpEvents.class.getName());
+
     private final List<PopUpEvent> popUpEvents = new ArrayList<>();
+
     private final List<PopUpEvent> executePopUpEvents = new ArrayList<>();
 
     public void invoke() {
