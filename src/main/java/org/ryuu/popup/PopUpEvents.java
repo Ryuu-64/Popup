@@ -2,6 +2,7 @@ package org.ryuu.popup;
 
 import lombok.Getter;
 import org.ryuu.functional.Action1Arg;
+import org.ryuu.functional.Actions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,13 +12,14 @@ import java.util.logging.Logger;
 public class PopUpEvents {
     @Getter
     private static final Logger logger = Logger.getLogger(PopUpEvents.class.getName());
-
     private final List<PopUpEvent> popUpEvents = new ArrayList<>();
-
     private final List<PopUpEvent> executePopUpEvents = new ArrayList<>();
+    public final Actions onEventEmpty = new Actions();
 
     public void invoke() {
         if (popUpEvents.isEmpty()) {
+            onEventEmpty.invoke();
+            onEventEmpty.clear();
             return;
         }
 
@@ -31,6 +33,7 @@ public class PopUpEvents {
             if (popUpEvent.getPriority() != nextPriority) {
                 continue;
             }
+
             i--;
             executePopUpEvents.add(popUpEvent);
             popUpEvents.remove(popUpEvent);
